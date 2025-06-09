@@ -12,6 +12,8 @@
             --tertiary: #f59e0b;
             --fourth: #8b5cf6;
             --fifth: #ef4444;
+            
+            /* Light mode defaults */
             --bg-primary: #ffffff;
             --bg-secondary: #f8fafc;
             --text-primary: #1f2937;
@@ -19,56 +21,54 @@
         }
 
         .dark-mode {
-            --bg-primary: #1f2937;
-            --bg-secondary: #111827;
-            --text-primary: #f9fafb;
-            --text-secondary: #d1d5db;
+            --bg-primary: #1f2937; /* Dark Gray 800 */
+            --bg-secondary: #111827; /* Dark Gray 900 */
+            --text-primary: #f9fafb;  /* Gray 50 */
+            --text-secondary: #d1d5db; /* Gray 300 */
+        }
+
+        body {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .color-input {
-            width: 60px;
-            height: 40px;
-            border-radius: 8px;
-            border: 2px solid #e5e7eb;
+            width: 50px; /* Reduced size slightly */
+            height: 30px; /* Reduced size slightly */
+            border-radius: 6px;
+            border: 1px solid #d1d5db; /* Gray 300 */
             cursor: pointer;
-            transition: all 0.2s;
+            padding: 0; /* Remove default padding for color input */
+            -webkit-appearance: none; /* Remove default appearance */
+            -moz-appearance: none;
+            appearance: none;
+            background-color: transparent; /* Allow native color picker to show through */
+        }
+        .color-input::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        .color-input::-webkit-color-swatch {
+            border: none;
+            border-radius: 5px;
+        }
+        .color-input::-moz-color-swatch {
+            border: none;
+            border-radius: 5px;
         }
 
-        .color-input:hover {
-            transform: scale(1.05);
-            border-color: #6b7280;
-        }
 
         .preview-container {
-            background: var(--bg-primary);
+            background-color: var(--bg-primary);
             color: var(--text-primary);
-            transition: all 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .btn-primary {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .btn-secondary {
-            background: var(--secondary);
-            border-color: var(--secondary);
-        }
-
-        .btn-tertiary {
-            background: var(--tertiary);
-            border-color: var(--tertiary);
-        }
-
-        .btn-fourth {
-            background: var(--fourth);
-            border-color: var(--fourth);
-        }
-
-        .btn-fifth {
-            background: var(--fifth);
-            border-color: var(--fifth);
-        }
+        .btn-primary { background-color: var(--primary); border-color: var(--primary); }
+        .btn-secondary { background-color: var(--secondary); border-color: var(--secondary); }
+        .btn-tertiary { background-color: var(--tertiary); border-color: var(--tertiary); }
+        .btn-fourth { background-color: var(--fourth); border-color: var(--fourth); }
+        .btn-fifth { background-color: var(--fifth); border-color: var(--fifth); }
 
         .accent-primary { color: var(--primary); }
         .accent-secondary { color: var(--secondary); }
@@ -76,201 +76,255 @@
         .accent-fourth { color: var(--fourth); }
         .accent-fifth { color: var(--fifth); }
 
-        .bg-accent-primary { background: var(--primary); }
-        .bg-accent-secondary { background: var(--secondary); }
+        .bg-accent-primary { background-color: var(--primary); }
+        .bg-accent-secondary { background-color: var(--secondary); }
 
         .toggle-switch {
             position: relative;
-            width: 60px;
-            height: 30px;
-            background: #e5e7eb;
-            border-radius: 15px;
+            width: 50px; /* Smaller toggle */
+            height: 26px;
+            background-color: #e5e7eb; /* Gray 200 */
+            border-radius: 13px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background-color 0.3s;
         }
 
         .toggle-switch.active {
-            background: var(--primary);
+            background-color: var(--primary);
         }
 
         .toggle-slider {
             position: absolute;
             top: 3px;
             left: 3px;
-            width: 24px;
-            height: 24px;
-            background: white;
+            width: 20px;
+            height: 20px;
+            background-color: white;
             border-radius: 50%;
             transition: transform 0.3s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .toggle-switch.active .toggle-slider {
-            transform: translateX(30px);
+            transform: translateX(24px); /* Adjusted for smaller size */
         }
 
-        .color-palette {
+        .color-palette-grid { /* Renamed from .color-palette to avoid conflict */
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .color-item {
             text-align: center;
         }
-
-        .export-btn {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            transition: all 0.3s ease;
-        }
-
-        .export-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
+        
         .preview-card {
             border: 1px solid var(--text-secondary);
-            border-radius: 12px;
-            overflow: hidden;
+            opacity: 0.5; /* For disabled inputs */
+            border-radius: 8px;
             transition: all 0.3s ease;
         }
-
-        .preview-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        input[type="color"]:disabled, input[type="text"]:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
+        input[type="checkbox"]:disabled + span {
+            opacity: 0.5;
+        }
+
     </style>
 </head>
-<body class="min-h-screen bg-gray-50 transition-all duration-300">
+<body class="min-h-screen">
     <div class="container mx-auto px-4 py-8">
-        <!-- Header -->
         <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-800 mb-2">🎨 Color Theme Generator</h1>
-            <p class="text-gray-600">Create beautiful color schemes and see them come to life</p>
+            <h1 class="text-4xl font-bold mb-2" style="color: var(--text-primary);">🎨 Color Theme Generator</h1>
+            <p style="color: var(--text-secondary);">Customize your brand's look and feel instantly.</p>
         </header>
 
         <div class="grid lg:grid-cols-2 gap-8">
             <!-- Color Selection Panel -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="rounded-xl shadow-lg p-6" style="background-color: var(--bg-primary);">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800">Theme Colors</h2>
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm text-gray-600">Light</span>
+                    <h2 class="text-2xl font-semibold" style="color: var(--text-primary);">Theme Colors</h2>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm" style="color: var(--text-secondary);">Light</span>
                         <div class="toggle-switch" id="modeToggle">
                             <div class="toggle-slider"></div>
                         </div>
-                        <span class="text-sm text-gray-600">Dark</span>
+                        <span class="text-sm" style="color: var(--text-secondary);">Dark</span>
                     </div>
                 </div>
 
-                <div class="color-palette">
+                <div class="mb-6 p-4 border-2 border-dashed border-gray-300 rounded-lg text-center">
+                    <input type="file" id="logoUpload" accept="image/*" class="hidden">
+                    <div id="logoUploadPreviewContainer" class="mb-3">
+                        <div class="w-20 h-20 mx-auto bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <button type="button" onclick="document.getElementById('logoUpload').click()" class="text-sm font-medium accent-primary hover:underline">
+                        Upload Brand Logo
+                    </button>
+                    <p class="text-xs mt-1" style="color: var(--text-secondary);">PNG, JPG, SVG (Max 2MB)</p>
+                </div>
+
+                <div class="color-palette-grid">
                     <div class="color-item">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Primary</label>
+                        <label class="block text-sm font-medium mb-1" style="color: var(--text-primary);">Primary *</label>
                         <input type="color" id="primary" class="color-input mx-auto block" value="#3b82f6">
-                        <span class="text-xs text-gray-500 mt-1 block" id="primary-hex">#3b82f6</span>
+                        <input type="text" id="primary-input" class="w-full mt-1 px-2 py-1 text-xs border rounded text-center" value="#3b82f6" placeholder="#rrggbb">
                     </div>
                     <div class="color-item">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Secondary</label>
+                        <label class="block text-sm font-medium mb-1" style="color: var(--text-primary);">Secondary *</label>
                         <input type="color" id="secondary" class="color-input mx-auto block" value="#10b981">
-                        <span class="text-xs text-gray-500 mt-1 block" id="secondary-hex">#10b981</span>
+                        <input type="text" id="secondary-input" class="w-full mt-1 px-2 py-1 text-xs border rounded text-center" value="#10b981" placeholder="#rrggbb">
                     </div>
                     <div class="color-item">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Tertiary</label>
+                        <label class="block text-sm font-medium mb-1" style="color: var(--text-primary);">Tertiary</label>
+                        <div class="flex items-center justify-center mb-1">
+                            <input type="checkbox" id="tertiary-enable" class="mr-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" checked>
+                            <span class="text-xs" style="color: var(--text-secondary);">Enable</span>
+                        </div>
                         <input type="color" id="tertiary" class="color-input mx-auto block" value="#f59e0b">
-                        <span class="text-xs text-gray-500 mt-1 block" id="tertiary-hex">#f59e0b</span>
+                        <input type="text" id="tertiary-input" class="w-full mt-1 px-2 py-1 text-xs border rounded text-center" value="#f59e0b" placeholder="#rrggbb">
                     </div>
                     <div class="color-item">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Fourth</label>
+                        <label class="block text-sm font-medium mb-1" style="color: var(--text-primary);">Fourth</label>
+                        <div class="flex items-center justify-center mb-1">
+                            <input type="checkbox" id="fourth-enable" class="mr-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="text-xs" style="color: var(--text-secondary);">Enable</span>
+                        </div>
                         <input type="color" id="fourth" class="color-input mx-auto block" value="#8b5cf6">
-                        <span class="text-xs text-gray-500 mt-1 block" id="fourth-hex">#8b5cf6</span>
+                        <input type="text" id="fourth-input" class="w-full mt-1 px-2 py-1 text-xs border rounded text-center" value="#8b5cf6" placeholder="#rrggbb">
                     </div>
                     <div class="color-item">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Fifth</label>
+                        <label class="block text-sm font-medium mb-1" style="color: var(--text-primary);">Fifth</label>
+                        <div class="flex items-center justify-center mb-1">
+                            <input type="checkbox" id="fifth-enable" class="mr-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="text-xs" style="color: var(--text-secondary);">Enable</span>
+                        </div>
                         <input type="color" id="fifth" class="color-input mx-auto block" value="#ef4444">
-                        <span class="text-xs text-gray-500 mt-1 block" id="fifth-hex">#ef4444</span>
+                        <input type="text" id="fifth-input" class="w-full mt-1 px-2 py-1 text-xs border rounded text-center" value="#ef4444" placeholder="#rrggbb">
                     </div>
                 </div>
 
                 <div class="mt-6 space-y-3">
-                    <button class="export-btn w-full py-3 px-6 text-white rounded-lg font-medium" onclick="exportTheme()">
-                        📥 Export Theme CSS
+                    <button class="w-full py-2.5 px-6 text-white rounded-lg font-medium btn-primary hover:opacity-90 transition-opacity" onclick="exportTheme()">
+                        Export Theme CSS
                     </button>
-                    <button class="w-full py-3 px-6 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" onclick="randomizeColors()">
-                        🎲 Randomize Colors
+                    <button class="w-full py-2.5 px-6 rounded-lg font-medium hover:opacity-90 transition-opacity" style="background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--text-secondary);" onclick="randomizeColors()">
+                        Randomize Colors
                     </button>
                 </div>
             </div>
 
             <!-- Live Preview Panel -->
-            <div class="preview-container bg-white rounded-xl shadow-lg p-6" id="previewPanel">
-                <h2 class="text-2xl font-semibold mb-6" style="color: var(--text-primary)">Live Preview</h2>
+            <div class="preview-container rounded-xl shadow-lg p-6" id="previewPanel">
+                <h2 class="text-2xl font-semibold mb-6" style="color: var(--text-primary);">Live Preview</h2>
                 
-                <!-- Sample Website Preview -->
                 <div class="space-y-6">
-                    <!-- Header Section -->
-                    <div class="bg-accent-primary text-white p-6 rounded-lg">
-                        <h1 class="text-3xl font-bold mb-2">Welcome to Your Site</h1>
-                        <p class="opacity-90">This is how your primary color looks as a header background</p>
+                    <!-- Brand Header Section -->
+                    <div class="bg-accent-primary text-white p-6 rounded-lg shadow">
+                        <div class="flex items-center mb-3">
+                            <div id="headerLogo" class="w-12 h-12 bg-white bg-opacity-25 rounded-lg mr-4 flex items-center justify-center overflow-hidden">
+                                <span class="text-2xl opacity-75">🏢</span>
+                            </div>
+                            <div>
+                                <h1 class="text-2xl font-bold">Your Brand Name</h1>
+                                <p class="opacity-80 text-sm">Creative Tagline Here</p>
+                            </div>
+                        </div>
+                        <p class="opacity-90 text-sm">This is how your primary color can define your brand's header.</p>
                     </div>
 
-                    <!-- Navigation -->
-                    <nav class="flex space-x-4 p-4 rounded-lg" style="background: var(--bg-secondary)">
-                        <a href="#" class="accent-primary font-medium">Home</a>
-                        <a href="#" class="accent-secondary font-medium">About</a>
-                        <a href="#" class="accent-tertiary font-medium">Services</a>
-                        <a href="#" class="accent-fourth font-medium">Contact</a>
+                    <nav class="flex items-center justify-between p-4 rounded-lg shadow-sm" style="background-color: var(--bg-secondary);">
+                        <div class="flex items-center">
+                            <div id="navLogo" class="w-8 h-8 rounded-md mr-3 flex items-center justify-center overflow-hidden" style="background-color: var(--primary); color: white;">
+                                <span class="text-lg">🏢</span>
+                            </div>
+                            <span class="font-bold" style="color: var(--text-primary);">BrandNav</span>
+                        </div>
+                        <div class="flex space-x-3 text-sm">
+                            <a href="#" class="accent-primary font-medium hover:underline">Home</a>
+                            <a href="#" class="accent-secondary font-medium hover:underline">About</a>
+                            <a href="#" class="accent-tertiary font-medium hover:underline" id="tertiaryNavLink">Services</a>
+                            <a href="#" class="accent-fourth font-medium hover:underline" id="fourthNavLink">Products</a>
+                            <a href="#" class="accent-fifth font-medium hover:underline" id="fifthNavLink">Contact</a>
+                        </div>
                     </nav>
 
-                    <!-- Content Cards -->
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="preview-card p-4" style="background: var(--bg-secondary)">
+                        <div class="p-4 rounded-lg shadow-sm" style="background-color: var(--bg-secondary); border-left: 4px solid var(--primary);">
                             <h3 class="accent-primary text-lg font-semibold mb-2">Feature One</h3>
-                            <p style="color: var(--text-secondary)" class="text-sm mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                            <button class="btn-primary text-white px-4 py-2 rounded font-medium">Learn More</button>
+                            <p style="color: var(--text-secondary);" class="text-sm mb-3">Highlight key features with your primary color accents.</p>
+                            <button class="btn-primary text-white px-4 py-1.5 text-sm rounded font-medium hover:opacity-90">Details</button>
                         </div>
-                        <div class="preview-card p-4" style="background: var(--bg-secondary)">
+                        <div class="p-4 rounded-lg shadow-sm" style="background-color: var(--bg-secondary); border-left: 4px solid var(--secondary);">
                             <h3 class="accent-secondary text-lg font-semibold mb-2">Feature Two</h3>
-                            <p style="color: var(--text-secondary)" class="text-sm mb-3">Sed do eiusmod tempor incididunt ut labore et dolore magna.</p>
-                            <button class="btn-secondary text-white px-4 py-2 rounded font-medium">Get Started</button>
+                            <p style="color: var(--text-secondary);" class="text-sm mb-3">Use secondary colors for alternative highlights or sections.</p>
+                            <button class="btn-secondary text-white px-4 py-1.5 text-sm rounded font-medium hover:opacity-90">Explore</button>
                         </div>
                     </div>
 
-                    <!-- Button Showcase -->
                     <div class="space-y-3">
-                        <h3 style="color: var(--text-primary)" class="text-lg font-semibold">Button Styles</h3>
+                        <h3 style="color: var(--text-primary);" class="text-lg font-semibold">Action Buttons</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="btn-primary text-white px-5 py-2 rounded font-medium text-sm hover:opacity-90">Primary Action</button>
+                            <button class="btn-secondary text-white px-5 py-2 rounded font-medium text-sm hover:opacity-90">Secondary Action</button>
+                            <button class="btn-tertiary text-white px-5 py-2 rounded font-medium text-sm hover:opacity-90" id="tertiaryBtn">Tertiary Option</button>
+                            <button class="btn-fourth text-white px-5 py-2 rounded font-medium text-sm hover:opacity-90" id="fourthBtn">Fourth Choice</button>
+                            <button class="btn-fifth text-white px-5 py-2 rounded font-medium text-sm hover:opacity-90" id="fifthBtn">Fifth Link</button>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-lg" style="background-color: var(--bg-secondary);">
+                        <h4 style="color: var(--text-primary);" class="font-semibold mb-3">Brand Palette Visualized</h4>
                         <div class="flex flex-wrap gap-3">
-                            <button class="btn-primary text-white px-4 py-2 rounded font-medium">Primary</button>
-                            <button class="btn-secondary text-white px-4 py-2 rounded font-medium">Secondary</button>
-                            <button class="btn-tertiary text-white px-4 py-2 rounded font-medium">Tertiary</button>
-                            <button class="btn-fourth text-white px-4 py-2 rounded font-medium">Fourth</button>
-                            <button class="btn-fifth text-white px-4 py-2 rounded font-medium">Fifth</button>
+                            <div class="text-center">
+                                <div class="w-10 h-10 rounded-md shadow" style="background-color: var(--primary);"></div>
+                                <div class="text-xs mt-1" style="color: var(--text-secondary);">Primary</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-10 h-10 rounded-md shadow" style="background-color: var(--secondary);"></div>
+                                <div class="text-xs mt-1" style="color: var(--text-secondary);">Secondary</div>
+                            </div>
+                            <div class="text-center" id="tertiaryPalette">
+                                <div class="w-10 h-10 rounded-md shadow" style="background-color: var(--tertiary);"></div>
+                                <div class="text-xs mt-1" style="color: var(--text-secondary);">Tertiary</div>
+                            </div>
+                            <div class="text-center" id="fourthPalette">
+                                <div class="w-10 h-10 rounded-md shadow" style="background-color: var(--fourth);"></div>
+                                <div class="text-xs mt-1" style="color: var(--text-secondary);">Fourth</div>
+                            </div>
+                            <div class="text-center" id="fifthPalette">
+                                <div class="w-10 h-10 rounded-md shadow" style="background-color: var(--fifth);"></div>
+                                <div class="text-xs mt-1" style="color: var(--text-secondary);">Fifth</div>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Text Examples -->
-                    <div class="space-y-2">
-                        <h3 style="color: var(--text-primary)" class="text-lg font-semibold">Typography</h3>
-                        <h1 style="color: var(--text-primary)" class="text-2xl font-bold">Main Heading</h1>
-                        <h2 class="accent-primary text-xl font-semibold">Colored Subheading</h2>
-                        <p style="color: var(--text-primary)">Regular paragraph text that adapts to your theme.</p>
-                        <p style="color: var(--text-secondary)" class="text-sm">Secondary text for descriptions and captions.</p>
-                    </div>
-
-                    <!-- Statistics -->
-                    <div class="grid grid-cols-3 gap-4 text-center p-4 rounded-lg" style="background: var(--bg-secondary)">
-                        <div>
-                            <div class="accent-tertiary text-2xl font-bold">150+</div>
-                            <div style="color: var(--text-secondary)" class="text-sm">Projects</div>
-                        </div>
-                        <div>
-                            <div class="accent-fourth text-2xl font-bold">50K</div>
-                            <div style="color: var(--text-secondary)" class="text-sm">Users</div>
-                        </div>
-                        <div>
-                            <div class="accent-fifth text-2xl font-bold">99%</div>
-                            <div style="color: var(--text-secondary)" class="text-sm">Satisfaction</div>
+                     <!-- Brand Typography & Logo Integration -->
+                    <div class="space-y-4 pt-4 border-t" style="border-color: var(--text-secondary); opacity: 0.5;">
+                        <h3 style="color: var(--text-primary);" class="text-lg font-semibold">Brand Identity Check</h3>
+                        <div class="grid md:grid-cols-2 gap-4 items-center">
+                            <div>
+                                <h1 style="color: var(--text-primary);" class="text-2xl font-bold mb-1">Brand Name</h1>
+                                <h2 class="accent-primary text-xl font-semibold mb-2">Slogan or Subheading</h2>
+                                <p style="color: var(--text-primary);" class="mb-2 text-sm">This is an example paragraph showing how body text will look with the selected text colors. It's important for readability.</p>
+                                <p style="color: var(--text-secondary);" class="text-xs">Secondary text provides additional, less prominent information.</p>
+                            </div>
+                            <div class="flex items-center justify-center p-4 rounded-lg" style="background-color: var(--bg-secondary);">
+                                <div class="text-center">
+                                    <div id="brandShowcaseLogo" class="w-16 h-16 rounded-lg mx-auto mb-2 flex items-center justify-center overflow-hidden" style="background-color: var(--primary); color: white;">
+                                         <span class="text-3xl">🏢</span>
+                                    </div>
+                                    <div class="accent-primary font-bold text-sm">Logo Preview</div>
+                                    <div class="text-xs" style="color: var(--text-secondary);">Displayed with Primary BG</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -280,76 +334,149 @@
 
     <script>
         let isDarkMode = false;
-        const colors = ['primary', 'secondary', 'tertiary', 'fourth', 'fifth'];
-        
-        // Initialize color inputs
-        colors.forEach(color => {
-            const input = document.getElementById(color);
-            input.addEventListener('input', (e) => {
-                updateColor(color, e.target.value);
-                updateHexDisplay(color, e.target.value);
-            });
-        });
+        const themeColorNames = ['primary', 'secondary', 'tertiary', 'fourth', 'fifth'];
+        let uploadedLogoURL = null;
 
-        // Mode toggle
-        document.getElementById('modeToggle').addEventListener('click', toggleMode);
+        const uiElementsMap = {
+            tertiary: ['tertiaryNavLink', 'tertiaryBtn', 'tertiaryPalette'],
+            fourth: ['fourthNavLink', 'fourthBtn', 'fourthPalette'],
+            fifth: ['fifthNavLink', 'fifthBtn', 'fifthPalette']
+        };
+        
+        const logoPlaceholderSVG = `
+            <svg class="w-10 h-10 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>`;
+        
+        const defaultIconPlaceholder = `<span class="text-2xl opacity-75">🏢</span>`;
+
 
         function updateColor(colorName, value) {
             document.documentElement.style.setProperty(`--${colorName}`, value);
         }
 
-        function updateHexDisplay(colorName, value) {
-            document.getElementById(`${colorName}-hex`).textContent = value;
+        function isValidHex(hex) {
+            return /^#[0-9A-F]{6}$/i.test(hex);
         }
 
+        function toggleColorOption(colorName, enabled) {
+            const colorInput = document.getElementById(colorName);
+            const hexInput = document.getElementById(`${colorName}-input`);
+            
+            colorInput.disabled = !enabled;
+            hexInput.disabled = !enabled;
+            
+            // Visually indicate disabled state for inputs
+            if (enabled) {
+                colorInput.style.opacity = '1';
+                hexInput.style.opacity = '1';
+            } else {
+                colorInput.style.opacity = '0.5';
+                hexInput.style.opacity = '0.5';
+            }
+
+            // Show/hide related preview elements
+            if (uiElementsMap[colorName]) {
+                uiElementsMap[colorName].forEach(elementId => {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.style.display = enabled ? '' : 'none'; // Use '' to revert to default display
+                         if (elementId.includes('NavLink') && enabled) {
+                            element.style.display = 'inline'; // Ensure nav links are inline
+                        }
+                    }
+                });
+            }
+            // If disabling, set the color to a neutral or transparent if applicable, or just hide
+            // For now, hiding is sufficient. If we wanted to "remove" color, we'd set to 'transparent' or initial.
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/') && file.size < 2 * 1024 * 1024) { // Max 2MB
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedLogoURL = e.target.result;
+                    updateAllLogoPreviews();
+                };
+                reader.readAsDataURL(file);
+            } else if (file) {
+                alert('Invalid file. Please upload an image (PNG, JPG, SVG) under 2MB.');
+                event.target.value = ''; // Reset file input
+            }
+        }
+
+        function updateAllLogoPreviews() {
+            const logoPreviewElements = [
+                { containerId: 'logoUploadPreviewContainer', defaultContent: `<div class="w-20 h-20 mx-auto bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">${logoPlaceholderSVG}</div>` },
+                { containerId: 'headerLogo', defaultContent: defaultIconPlaceholder },
+                { containerId: 'navLogo', defaultContent: defaultIconPlaceholder.replace('text-2xl', 'text-lg') },
+                { containerId: 'brandShowcaseLogo', defaultContent: defaultIconPlaceholder.replace('text-2xl', 'text-3xl') }
+            ];
+
+            logoPreviewElements.forEach(item => {
+                const container = document.getElementById(item.containerId);
+                if (container) {
+                    if (uploadedLogoURL) {
+                        container.innerHTML = `<img src="${uploadedLogoURL}" alt="Brand Logo" class="w-full h-full object-contain">`;
+                        if (item.containerId === 'logoUploadPreviewContainer') { // Special handling for upload preview if needed
+                           container.firstElementChild.classList.add('rounded-lg');
+                        }
+                    } else {
+                        container.innerHTML = item.defaultContent;
+                    }
+                }
+            });
+        }
+        
         function toggleMode() {
             isDarkMode = !isDarkMode;
             const toggle = document.getElementById('modeToggle');
             const body = document.body;
-            const previewPanel = document.getElementById('previewPanel');
+            // const previewPanel = document.getElementById('previewPanel'); // Not strictly needed if body.dark-mode cascades
             
             toggle.classList.toggle('active');
             
             if (isDarkMode) {
                 body.classList.add('dark-mode');
-                body.style.background = '#111827';
-                previewPanel.classList.add('dark-mode');
-                updateCSSVariables(true);
+                // body.style.background = '#111827'; // Let CSS var handle this
+                // previewPanel.classList.add('dark-mode'); // Let CSS var handle this
             } else {
                 body.classList.remove('dark-mode');
-                body.style.background = '#f8fafc';
-                previewPanel.classList.remove('dark-mode');
-                updateCSSVariables(false);
+                // body.style.background = '#f8fafc'; // Let CSS var handle this
+                // previewPanel.classList.remove('dark-mode'); // Let CSS var handle this
             }
+            // updateCSSVariables is implicitly handled by body class toggle and :root / .dark-mode CSS
         }
-
-        function updateCSSVariables(dark) {
-            if (dark) {
-                document.documentElement.style.setProperty('--bg-primary', '#1f2937');
-                document.documentElement.style.setProperty('--bg-secondary', '#111827');
-                document.documentElement.style.setProperty('--text-primary', '#f9fafb');
-                document.documentElement.style.setProperty('--text-secondary', '#d1d5db');
-            } else {
-                document.documentElement.style.setProperty('--bg-primary', '#ffffff');
-                document.documentElement.style.setProperty('--bg-secondary', '#f8fafc');
-                document.documentElement.style.setProperty('--text-primary', '#1f2937');
-                document.documentElement.style.setProperty('--text-secondary', '#6b7280');
-            }
-        }
+        
+        // This function is effectively replaced by CSS variables defined in :root and .dark-mode
+        // function updateCSSVariables(dark) { ... } // No longer explicitly called or needed this way
 
         function randomizeColors() {
-            colors.forEach(color => {
-                const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-                document.getElementById(color).value = randomColor;
-                updateColor(color, randomColor);
-                updateHexDisplay(color, randomColor);
+            themeColorNames.forEach(colorName => {
+                const colorInput = document.getElementById(colorName);
+                const hexInput = document.getElementById(`${colorName}-input`);
+                const enableCheckbox = document.getElementById(`${colorName}-enable`);
+
+                // Primary and Secondary are always randomized. Optional colors only if enabled.
+                if (['primary', 'secondary'].includes(colorName) || (enableCheckbox && enableCheckbox.checked)) {
+                    const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+                    colorInput.value = randomColor;
+                    hexInput.value = randomColor;
+                    updateColor(colorName, randomColor);
+                }
             });
         }
 
         function exportTheme() {
             const themeData = {};
-            colors.forEach(color => {
-                themeData[color] = document.getElementById(color).value;
+            themeColorNames.forEach(color => {
+                const enableCheckbox = document.getElementById(`${color}-enable`);
+                if (['primary', 'secondary'].includes(color) || (enableCheckbox && enableCheckbox.checked)) {
+                    themeData[color] = document.getElementById(color).value;
+                } else {
+                     themeData[color] = "/* disabled */ " + document.getElementById(color).value; // Or just skip
+                }
             });
             
             const cssContent = `/* Generated Theme CSS */
@@ -360,7 +487,7 @@
     --fourth: ${themeData.fourth};
     --fifth: ${themeData.fifth};
     
-    /* Light mode */
+    /* Light mode base */
     --bg-primary: #ffffff;
     --bg-secondary: #f8fafc;
     --text-primary: #1f2937;
@@ -368,49 +495,90 @@
 }
 
 .dark-mode {
+    /* Dark mode base */
     --bg-primary: #1f2937;
     --bg-secondary: #111827;
     --text-primary: #f9fafb;
     --text-secondary: #d1d5db;
 }
 
-/* Utility classes */
-.btn-primary { background: var(--primary); }
-.btn-secondary { background: var(--secondary); }
-.btn-tertiary { background: var(--tertiary); }
-.btn-fourth { background: var(--fourth); }
-.btn-fifth { background: var(--fifth); }
+/* Example utility classes */
+.btn-primary { background-color: var(--primary); /* ... add text color, border etc. */ }
+.btn-secondary { background-color: var(--secondary); }
+/* ... etc. for other theme colors */
 
-.text-primary { color: var(--primary); }
-.text-secondary { color: var(--secondary); }
-.text-tertiary { color: var(--tertiary); }
-.text-fourth { color: var(--fourth); }
-.text-fifth { color: var(--fifth); }
+.accent-primary { color: var(--primary); }
+.accent-secondary { color: var(--secondary); }
+/* ... etc. for other theme colors */
+`;
 
-.bg-theme-primary { background: var(--bg-primary); }
-.bg-theme-secondary { background: var(--bg-secondary); }
-.color-theme-primary { color: var(--text-primary); }
-.color-theme-secondary { color: var(--text-secondary); }`;
-
-            // Create and download file
             const blob = new Blob([cssContent], { type: 'text/css' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'theme-colors.css';
+            a.download = 'brand-theme.css';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            alert('Theme CSS exported successfully!');
+            alert('Theme CSS exported!');
         }
 
-        // Initialize with default colors
-        colors.forEach(color => {
-            const input = document.getElementById(color);
-            updateHexDisplay(color, input.value);
+        // Initial Setup
+        document.addEventListener('DOMContentLoaded', () => {
+            // Attach event listeners to color pickers and hex inputs
+            themeColorNames.forEach(colorName => {
+                const colorInput = document.getElementById(colorName);
+                const hexInput = document.getElementById(`${colorName}-input`);
+                const enableCheckbox = document.getElementById(`${colorName}-enable`);
+
+                colorInput.addEventListener('input', (e) => {
+                    const newColor = e.target.value;
+                    hexInput.value = newColor;
+                    updateColor(colorName, newColor);
+                });
+
+                hexInput.addEventListener('input', (e) => {
+                    const newColor = e.target.value;
+                    if (isValidHex(newColor)) {
+                        colorInput.value = newColor;
+                        updateColor(colorName, newColor);
+                    }
+                });
+
+                if (enableCheckbox) {
+                    enableCheckbox.addEventListener('change', (e) => {
+                        toggleColorOption(colorName, e.target.checked);
+                    });
+                    // Initial state for optional colors based on `checked` attribute
+                    toggleColorOption(colorName, enableCheckbox.checked);
+                } else if (['primary', 'secondary'].includes(colorName)) {
+                    // Primary and secondary are always "enabled"
+                    // Ensure their inputs are not disabled by mistake from a general loop
+                    colorInput.disabled = false;
+                    hexInput.disabled = false;
+                }
+            });
+
+            // Logo Upload Listener
+            document.getElementById('logoUpload').addEventListener('change', handleLogoUpload);
+
+            // Mode Toggle Listener
+            document.getElementById('modeToggle').addEventListener('click', toggleMode);
+            
+            // Initialize logo previews with placeholders
+            updateAllLogoPreviews();
+
+            // Set initial hex input values from color pickers (redundant if HTML value is set, but good practice)
+            themeColorNames.forEach(colorName => {
+                 const colorInput = document.getElementById(colorName);
+                 const hexInput = document.getElementById(`${colorName}-input`);
+                 hexInput.value = colorInput.value; // Sync hex input with color picker's initial value
+                 updateColor(colorName, colorInput.value); // Ensure CSS vars are set on load
+            });
         });
+
     </script>
 </body>
 </html>
