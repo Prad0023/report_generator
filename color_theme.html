@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Theme Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #10b981;
+            --tertiary: #f59e0b;
+            --fourth: #8b5cf6;
+            --fifth: #ef4444;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+        }
+
+        .dark-mode {
+            --bg-primary: #1f2937;
+            --bg-secondary: #111827;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+        }
+
+        .color-input {
+            width: 60px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .color-input:hover {
+            transform: scale(1.05);
+            border-color: #6b7280;
+        }
+
+        .preview-container {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .btn-tertiary {
+            background: var(--tertiary);
+            border-color: var(--tertiary);
+        }
+
+        .btn-fourth {
+            background: var(--fourth);
+            border-color: var(--fourth);
+        }
+
+        .btn-fifth {
+            background: var(--fifth);
+            border-color: var(--fifth);
+        }
+
+        .accent-primary { color: var(--primary); }
+        .accent-secondary { color: var(--secondary); }
+        .accent-tertiary { color: var(--tertiary); }
+        .accent-fourth { color: var(--fourth); }
+        .accent-fifth { color: var(--fifth); }
+
+        .bg-accent-primary { background: var(--primary); }
+        .bg-accent-secondary { background: var(--secondary); }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #e5e7eb;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(30px);
+        }
+
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .color-item {
+            text-align: center;
+        }
+
+        .export-btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            transition: all 0.3s ease;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .preview-card {
+            border: 1px solid var(--text-secondary);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .preview-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 transition-all duration-300">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🎨 Color Theme Generator</h1>
+            <p class="text-gray-600">Create beautiful color schemes and see them come to life</p>
+        </header>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Color Selection Panel -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800">Theme Colors</h2>
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm text-gray-600">Light</span>
+                        <div class="toggle-switch" id="modeToggle">
+                            <div class="toggle-slider"></div>
+                        </div>
+                        <span class="text-sm text-gray-600">Dark</span>
+                    </div>
+                </div>
+
+                <div class="color-palette">
+                    <div class="color-item">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Primary</label>
+                        <input type="color" id="primary" class="color-input mx-auto block" value="#3b82f6">
+                        <span class="text-xs text-gray-500 mt-1 block" id="primary-hex">#3b82f6</span>
+                    </div>
+                    <div class="color-item">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Secondary</label>
+                        <input type="color" id="secondary" class="color-input mx-auto block" value="#10b981">
+                        <span class="text-xs text-gray-500 mt-1 block" id="secondary-hex">#10b981</span>
+                    </div>
+                    <div class="color-item">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tertiary</label>
+                        <input type="color" id="tertiary" class="color-input mx-auto block" value="#f59e0b">
+                        <span class="text-xs text-gray-500 mt-1 block" id="tertiary-hex">#f59e0b</span>
+                    </div>
+                    <div class="color-item">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Fourth</label>
+                        <input type="color" id="fourth" class="color-input mx-auto block" value="#8b5cf6">
+                        <span class="text-xs text-gray-500 mt-1 block" id="fourth-hex">#8b5cf6</span>
+                    </div>
+                    <div class="color-item">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Fifth</label>
+                        <input type="color" id="fifth" class="color-input mx-auto block" value="#ef4444">
+                        <span class="text-xs text-gray-500 mt-1 block" id="fifth-hex">#ef4444</span>
+                    </div>
+                </div>
+
+                <div class="mt-6 space-y-3">
+                    <button class="export-btn w-full py-3 px-6 text-white rounded-lg font-medium" onclick="exportTheme()">
+                        📥 Export Theme CSS
+                    </button>
+                    <button class="w-full py-3 px-6 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors" onclick="randomizeColors()">
+                        🎲 Randomize Colors
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live Preview Panel -->
+            <div class="preview-container bg-white rounded-xl shadow-lg p-6" id="previewPanel">
+                <h2 class="text-2xl font-semibold mb-6" style="color: var(--text-primary)">Live Preview</h2>
+                
+                <!-- Sample Website Preview -->
+                <div class="space-y-6">
+                    <!-- Header Section -->
+                    <div class="bg-accent-primary text-white p-6 rounded-lg">
+                        <h1 class="text-3xl font-bold mb-2">Welcome to Your Site</h1>
+                        <p class="opacity-90">This is how your primary color looks as a header background</p>
+                    </div>
+
+                    <!-- Navigation -->
+                    <nav class="flex space-x-4 p-4 rounded-lg" style="background: var(--bg-secondary)">
+                        <a href="#" class="accent-primary font-medium">Home</a>
+                        <a href="#" class="accent-secondary font-medium">About</a>
+                        <a href="#" class="accent-tertiary font-medium">Services</a>
+                        <a href="#" class="accent-fourth font-medium">Contact</a>
+                    </nav>
+
+                    <!-- Content Cards -->
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="preview-card p-4" style="background: var(--bg-secondary)">
+                            <h3 class="accent-primary text-lg font-semibold mb-2">Feature One</h3>
+                            <p style="color: var(--text-secondary)" class="text-sm mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            <button class="btn-primary text-white px-4 py-2 rounded font-medium">Learn More</button>
+                        </div>
+                        <div class="preview-card p-4" style="background: var(--bg-secondary)">
+                            <h3 class="accent-secondary text-lg font-semibold mb-2">Feature Two</h3>
+                            <p style="color: var(--text-secondary)" class="text-sm mb-3">Sed do eiusmod tempor incididunt ut labore et dolore magna.</p>
+                            <button class="btn-secondary text-white px-4 py-2 rounded font-medium">Get Started</button>
+                        </div>
+                    </div>
+
+                    <!-- Button Showcase -->
+                    <div class="space-y-3">
+                        <h3 style="color: var(--text-primary)" class="text-lg font-semibold">Button Styles</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <button class="btn-primary text-white px-4 py-2 rounded font-medium">Primary</button>
+                            <button class="btn-secondary text-white px-4 py-2 rounded font-medium">Secondary</button>
+                            <button class="btn-tertiary text-white px-4 py-2 rounded font-medium">Tertiary</button>
+                            <button class="btn-fourth text-white px-4 py-2 rounded font-medium">Fourth</button>
+                            <button class="btn-fifth text-white px-4 py-2 rounded font-medium">Fifth</button>
+                        </div>
+                    </div>
+
+                    <!-- Text Examples -->
+                    <div class="space-y-2">
+                        <h3 style="color: var(--text-primary)" class="text-lg font-semibold">Typography</h3>
+                        <h1 style="color: var(--text-primary)" class="text-2xl font-bold">Main Heading</h1>
+                        <h2 class="accent-primary text-xl font-semibold">Colored Subheading</h2>
+                        <p style="color: var(--text-primary)">Regular paragraph text that adapts to your theme.</p>
+                        <p style="color: var(--text-secondary)" class="text-sm">Secondary text for descriptions and captions.</p>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="grid grid-cols-3 gap-4 text-center p-4 rounded-lg" style="background: var(--bg-secondary)">
+                        <div>
+                            <div class="accent-tertiary text-2xl font-bold">150+</div>
+                            <div style="color: var(--text-secondary)" class="text-sm">Projects</div>
+                        </div>
+                        <div>
+                            <div class="accent-fourth text-2xl font-bold">50K</div>
+                            <div style="color: var(--text-secondary)" class="text-sm">Users</div>
+                        </div>
+                        <div>
+                            <div class="accent-fifth text-2xl font-bold">99%</div>
+                            <div style="color: var(--text-secondary)" class="text-sm">Satisfaction</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isDarkMode = false;
+        const colors = ['primary', 'secondary', 'tertiary', 'fourth', 'fifth'];
+        
+        // Initialize color inputs
+        colors.forEach(color => {
+            const input = document.getElementById(color);
+            input.addEventListener('input', (e) => {
+                updateColor(color, e.target.value);
+                updateHexDisplay(color, e.target.value);
+            });
+        });
+
+        // Mode toggle
+        document.getElementById('modeToggle').addEventListener('click', toggleMode);
+
+        function updateColor(colorName, value) {
+            document.documentElement.style.setProperty(`--${colorName}`, value);
+        }
+
+        function updateHexDisplay(colorName, value) {
+            document.getElementById(`${colorName}-hex`).textContent = value;
+        }
+
+        function toggleMode() {
+            isDarkMode = !isDarkMode;
+            const toggle = document.getElementById('modeToggle');
+            const body = document.body;
+            const previewPanel = document.getElementById('previewPanel');
+            
+            toggle.classList.toggle('active');
+            
+            if (isDarkMode) {
+                body.classList.add('dark-mode');
+                body.style.background = '#111827';
+                previewPanel.classList.add('dark-mode');
+                updateCSSVariables(true);
+            } else {
+                body.classList.remove('dark-mode');
+                body.style.background = '#f8fafc';
+                previewPanel.classList.remove('dark-mode');
+                updateCSSVariables(false);
+            }
+        }
+
+        function updateCSSVariables(dark) {
+            if (dark) {
+                document.documentElement.style.setProperty('--bg-primary', '#1f2937');
+                document.documentElement.style.setProperty('--bg-secondary', '#111827');
+                document.documentElement.style.setProperty('--text-primary', '#f9fafb');
+                document.documentElement.style.setProperty('--text-secondary', '#d1d5db');
+            } else {
+                document.documentElement.style.setProperty('--bg-primary', '#ffffff');
+                document.documentElement.style.setProperty('--bg-secondary', '#f8fafc');
+                document.documentElement.style.setProperty('--text-primary', '#1f2937');
+                document.documentElement.style.setProperty('--text-secondary', '#6b7280');
+            }
+        }
+
+        function randomizeColors() {
+            colors.forEach(color => {
+                const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+                document.getElementById(color).value = randomColor;
+                updateColor(color, randomColor);
+                updateHexDisplay(color, randomColor);
+            });
+        }
+
+        function exportTheme() {
+            const themeData = {};
+            colors.forEach(color => {
+                themeData[color] = document.getElementById(color).value;
+            });
+            
+            const cssContent = `/* Generated Theme CSS */
+:root {
+    --primary: ${themeData.primary};
+    --secondary: ${themeData.secondary};
+    --tertiary: ${themeData.tertiary};
+    --fourth: ${themeData.fourth};
+    --fifth: ${themeData.fifth};
+    
+    /* Light mode */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+}
+
+.dark-mode {
+    --bg-primary: #1f2937;
+    --bg-secondary: #111827;
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+}
+
+/* Utility classes */
+.btn-primary { background: var(--primary); }
+.btn-secondary { background: var(--secondary); }
+.btn-tertiary { background: var(--tertiary); }
+.btn-fourth { background: var(--fourth); }
+.btn-fifth { background: var(--fifth); }
+
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-tertiary { color: var(--tertiary); }
+.text-fourth { color: var(--fourth); }
+.text-fifth { color: var(--fifth); }
+
+.bg-theme-primary { background: var(--bg-primary); }
+.bg-theme-secondary { background: var(--bg-secondary); }
+.color-theme-primary { color: var(--text-primary); }
+.color-theme-secondary { color: var(--text-secondary); }`;
+
+            // Create and download file
+            const blob = new Blob([cssContent], { type: 'text/css' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'theme-colors.css';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Theme CSS exported successfully!');
+        }
+
+        // Initialize with default colors
+        colors.forEach(color => {
+            const input = document.getElementById(color);
+            updateHexDisplay(color, input.value);
+        });
+    </script>
+</body>
+</html>
