@@ -1,1 +1,329 @@
 
+{
+  "topicInfo": {
+    "courseId": "COURSE_001",
+    "subjectId": "SUBJECT_001", 
+    "moduleId": "MODULE_001",
+    "topicId": "TOPIC_001",
+    "topicName": "Variables and Data Types",
+    "difficulty": "beginner",
+    "estimatedTime": 15,
+    "createdAt": "2025-06-04T10:30:00Z",
+    "updatedAt": "2025-06-04T10:30:00Z"
+  },
+  "assessments": [
+    {
+      "id": "mcq_001",
+      "type": "mcq",
+      "title": "Understanding Variables",
+      "instruction": "Choose the correct answer for each question.",
+      "timeLimit": 5,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "What is the correct way to declare an integer variable in Python?",
+          "code": "# Which of these is correct?\n# Option A: int age = 25\n# Option B: age = 25\n# Option C: var age = 25\n# Option D: age: int = 25",
+          "options": [
+            "int age = 25",
+            "age = 25", 
+            "var age = 25",
+            "age: int = 25"
+          ],
+          "correctAnswer": 1,
+          "explanation": "In Python, you can directly assign a value to create a variable. Python automatically determines the data type."
+        },
+        {
+          "id": "q2", 
+          "question": "What will be the output of this code?",
+          "code": "x = 10\ny = '20'\nprint(x + int(y))",
+          "options": [
+            "1020",
+            "30",
+            "Error",
+            "None"
+          ],
+          "correctAnswer": 1,
+          "explanation": "int(y) converts string '20' to integer 20, then 10 + 20 = 30"
+        }
+      ]
+    },
+    {
+      "id": "story_builder_001",
+      "type": "code_story_builder",
+      "title": "Build a Morning Routine Story",
+      "instruction": "Arrange the code blocks in the correct order to create a logical morning routine program.",
+      "timeLimit": 8,
+      "exercises": [
+        {
+          "id": "sb1",
+          "scenario": "Help Alex create a morning routine program",
+          "storyContext": "Alex wants to automate their morning routine. Arrange the functions in the right order.",
+          "codeBlocks": [
+            {
+              "id": "block1",
+              "code": "wakeUp()",
+              "description": "Wake up and get out of bed"
+            },
+            {
+              "id": "block2", 
+              "code": "brushTeeth()",
+              "description": "Brush teeth for 2 minutes"
+            },
+            {
+              "id": "block3",
+              "code": "makeBreakfast()",
+              "description": "Prepare breakfast meal"
+            },
+            {
+              "id": "block4",
+              "code": "getDressed()",
+              "description": "Put on clothes for the day"
+            }
+          ],
+          "correctOrder": ["block1", "block2", "block4", "block3"],
+          "explanation": "Logical morning sequence: wake up first, then hygiene, get dressed, finally make breakfast"
+        },
+        {
+          "id": "sb2",
+          "scenario": "Create a simple calculator program flow",
+          "storyContext": "Build a calculator that takes two numbers and adds them.",
+          "codeBlocks": [
+            {
+              "id": "calc1",
+              "code": "displayResult(result)",
+              "description": "Show the final answer"
+            },
+            {
+              "id": "calc2",
+              "code": "getUserInput()",
+              "description": "Ask user for numbers"
+            },
+            {
+              "id": "calc3", 
+              "code": "result = addNumbers(num1, num2)",
+              "description": "Calculate the sum"
+            },
+            {
+              "id": "calc4",
+              "code": "validateInput(num1, num2)",
+              "description": "Check if inputs are valid numbers"
+            }
+          ],
+          "correctOrder": ["calc2", "calc4", "calc3", "calc1"],
+          "explanation": "Program flow: get input → validate → calculate → display result"
+        }
+      ]
+    },
+    {
+      "id": "detective_001",
+      "type": "code_detective", 
+      "title": "Code Mystery Solver",
+      "instruction": "Look at the output and figure out which code produced it.",
+      "timeLimit": 10,
+      "mysteries": [
+        {
+          "id": "mystery1",
+          "mysteryOutput": "Numbers: 2, 4, 6, 8, 10",
+          "clue": "This code prints even numbers from 2 to 10",
+          "suspects": [
+            {
+              "id": "suspect1",
+              "code": "for i in range(1, 11):\n    if i % 2 == 0:\n        print(i, end=', ')",
+              "description": "Loop through 1-10, print even numbers"
+            },
+            {
+              "id": "suspect2", 
+              "code": "for i in range(2, 11, 2):\n    print(i, end=', ')",
+              "description": "Loop through even numbers directly"
+            },
+            {
+              "id": "suspect3",
+              "code": "i = 2\nwhile i <= 10:\n    print(i, end=', ')\n    i += 3",
+              "description": "While loop incrementing by 3"
+            }
+          ],
+          "correctSuspect": "suspect2",
+          "explanation": "range(2, 11, 2) directly generates even numbers from 2 to 10 with step 2"
+        },
+        {
+          "id": "mystery2",
+          "mysteryOutput": "Hello World!\nHello World!\nHello World!",
+          "clue": "This code prints the same message 3 times",
+          "suspects": [
+            {
+              "id": "suspect1",
+              "code": "for i in range(3):\n    print('Hello World!')",
+              "description": "Simple for loop 3 times"
+            },
+            {
+              "id": "suspect2",
+              "code": "print('Hello World!' * 3)",
+              "description": "String multiplication"
+            },
+            {
+              "id": "suspect3", 
+              "code": "message = 'Hello World!'\nfor i in range(3):\n    print(message)",
+              "description": "Loop with variable"
+            }
+          ],
+          "correctSuspect": "suspect1",
+          "explanation": "The output shows 3 separate lines, which matches the for loop printing 3 times"
+        }
+      ]
+    },
+    {
+      "id": "recipe_001",
+      "type": "code_recipe_cards",
+      "title": "Programming Recipe Cards",
+      "instruction": "Match the coding ingredients with their recipe steps to create the final program dish.",
+      "timeLimit": 12,
+      "recipes": [
+        {
+          "id": "recipe1",
+          "dishName": "User Login Validator",
+          "description": "A program that checks if user credentials are correct",
+          "ingredients": [
+            {
+              "id": "ing1",
+              "name": "username",
+              "type": "string variable",
+              "description": "Stores the user's login name"
+            },
+            {
+              "id": "ing2", 
+              "name": "password",
+              "type": "string variable", 
+              "description": "Stores the user's secret password"
+            },
+            {
+              "id": "ing3",
+              "name": "isValid",
+              "type": "boolean variable",
+              "description": "Stores true/false result"
+            }
+          ],
+          "cookingSteps": [
+            {
+              "id": "step1",
+              "action": "getUserInput()",
+              "description": "Collect username and password from user"
+            },
+            {
+              "id": "step2",
+              "action": "validateCredentials(username, password)", 
+              "description": "Check if credentials match database"
+            },
+            {
+              "id": "step3",
+              "action": "displayResult(isValid)",
+              "description": "Show success or error message"
+            }
+          ],
+          "finalDish": "A working login system that securely validates user access",
+          "correctMatching": {
+            "ing1": "step1",
+            "ing2": "step2", 
+            "ing3": "step3"
+          }
+        },
+        {
+          "id": "recipe2",
+          "dishName": "Grade Calculator Soup",
+          "description": "A program that calculates student's average grade",
+          "ingredients": [
+            {
+              "id": "grade1",
+              "name": "testScores[]",
+              "type": "array of numbers",
+              "description": "List of all test scores"
+            },
+            {
+              "id": "grade2",
+              "name": "totalSum", 
+              "type": "number variable",
+              "description": "Sum of all scores"
+            },
+            {
+              "id": "grade3",
+              "name": "average",
+              "type": "number variable",
+              "description": "Final calculated average"
+            }
+          ],
+          "cookingSteps": [
+            {
+              "id": "gstep1",
+              "action": "collectAllScores()",
+              "description": "Gather all test scores into array"
+            },
+            {
+              "id": "gstep2",
+              "action": "calculateSum(testScores)",
+              "description": "Add up all the scores"
+            },
+            {
+              "id": "gstep3", 
+              "action": "findAverage(totalSum, count)",
+              "description": "Divide sum by number of tests"
+            }
+          ],
+          "finalDish": "A grade calculator that shows student's performance",
+          "correctMatching": {
+            "grade1": "gstep1",
+            "grade2": "gstep2",
+            "grade3": "gstep3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "charades_001",
+      "type": "code_charades",
+      "title": "Explain Code Without Tech Words",
+      "instruction": "Describe what this code does using simple, everyday language. No programming terms allowed!",
+      "timeLimit": 8,
+      "challenges": [
+        {
+          "id": "charade1",
+          "code": "numbers = [64, 34, 25, 12, 22, 11, 90]\nfor i in range(len(numbers)):\n    for j in range(0, len(numbers)-i-1):\n        if numbers[j] > numbers[j+1]:\n            numbers[j], numbers[j+1] = numbers[j+1], numbers[j]\nprint(numbers)",
+          "difficulty": "beginner",
+          "hints": [
+            "Think about organizing things",
+            "Imagine arranging books on a shelf", 
+            "What happens when things are out of order?"
+          ],
+          "acceptableAnswers": [
+            "arranging numbers from smallest to biggest",
+            "organizing numbers in order",
+            "sorting numbers like organizing books by height",
+            "putting numbers in line from small to large"
+          ],
+          "sampleAnswer": "This code takes a messy list of numbers and arranges them neatly from smallest to biggest, like organizing books on a shelf by height."
+        },
+        {
+          "id": "charade2", 
+          "code": "age = int(input('Enter your age: '))\nif age >= 18:\n    print('You can vote!')\nelse:\n    print('You cannot vote yet.')",
+          "difficulty": "beginner",
+          "hints": [
+            "Think about rules and permissions",
+            "What happens when you reach a certain age?",
+            "This is about making decisions"
+          ],
+          "acceptableAnswers": [
+            "checking if someone is old enough to vote",
+            "asking age and deciding voting permission", 
+            "making a decision based on how old someone is",
+            "checking age to give permission for voting"
+          ],
+          "sampleAnswer": "This code asks how old you are and then tells you if you're old enough to vote, like a bouncer checking ID at a club."
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "totalAssessments": 5,
+    "totalQuestions": 8,
+    "version": "1.0",
+    "tags": ["variables", "loops", "conditionals", "beginner"]
+  }
+}
