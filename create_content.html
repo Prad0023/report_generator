@@ -1,1 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Interaction Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Three.js is optional, not used in this completion for simplicity with particles -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script> -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            box-sizing: border-box;
+        }
+        
+        .phone-container {
+            background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        
+        .screen {
+            background: #000; /* Default: off state */
+            transition: background 0.3s ease;
+            position: relative; /* For absolute positioning of overlays */
+        }
+        
+        .screen.on { /* When main content is visible (unlocked) */
+            background: linear-gradient(135deg, #1e1e2d, #2c2c3e); /* Darker theme for app space */
+        }
+        
+        .screen.off {
+            background: #000;
+        }
+        
+        .lock-screen {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Example lock screen bg */
+            color: white;
+        }
+        
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .vibrate {
+            animation: vibrate 0.1s infinite;
+        }
+        
+        @keyframes vibrate {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+        
+        .blink {
+            animation: blink-screen 0.7s infinite alternate;
+        }
+        
+        @keyframes blink-screen {
+            from { box-shadow: 0 0 10px 5px rgba(255,255,255,0.3); }
+            to { box-shadow: 0 0 20px 10px rgba(255,255,255,0.7); }
+        }
+        
+        .typewriter {
+            border-right: 2px solid #10b981; /* Cursor color */
+            animation: blink-cursor 0.7s step-end infinite;
+            white-space: pre-wrap; /* Preserve spaces and newlines */
+            word-wrap: break-word;
+        }
+        
+        @keyframes blink-cursor {
+            from, to { border-color: transparent; }
+            50% { border-color: #10b981; }
+        }
+        
+        .notification-banner {
+            background: rgba(50, 50, 50, 0.8); /* Darker, more iOS-like notification */
+            backdrop-filter: blur(10px);
+            transform: translateY(-150%); /* Start off-screen */
+            border-radius: 16px; /* iOS style */
+            margin: 8px; /* Margin from screen edges */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+        
+        .chat-bubble-sent {
+            background: #007AFF; /* iOS blue */
+            color: white;
+            border-radius: 1.25rem;
+            padding: 0.75rem 1rem;
+        }
+        
+        .chat-bubble-received {
+            background: #E5E5EA; /* iOS gray */
+            color: #000;
+            border-radius: 1.25rem;
+            padding: 0.75rem 1rem;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            background: white; /* Sparkle color */
+            border-radius: 50%;
+            opacity: 0;
+        }
+        
+        .screen-glow-effect { /* For message notification glow */
+            box-shadow: 0 0 25px 8px rgba(52, 152, 219, 0.6); /* Blueish glow */
+            transition: box-shadow 0.5s ease-out;
+        }
+        
+        .call-overlay {
+            background: linear-gradient(145deg, rgba(30, 30, 30, 0.95), rgba(0, 0, 0, 0.98));
+            backdrop-filter: blur(20px);
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .signal-bars {
+            display: flex;
+            gap: 2px;
+            align-items: flex-end; /* Align bars to bottom */
+        }
+        
+        .signal-bar {
+            width: 3px;
+            background: white;
+            border-radius: 1px;
+        }
+        
+        .wifi-icon {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .home-indicator {
+            width: 134px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 100px; /* Fully rounded ends */
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
 
+        /* Ensure overlays cover status bar if needed, or manage z-index */
+        #callOverlay, #chatPanel, #emailOverlay, #lockScreen, #blackScreen {
+            z-index: 100;
+        }
+        #statusBar {
+            z-index: 110; /* Status bar on top of most things unless an overlay covers it */
+        }
+        #messageNotification {
+            z-index: 120; /* Notifications above status bar temporarily */
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen flex items-center justify-center p-4 selection:bg-green-500 selection:text-white">
+    
+    <audio id="callToneAudio" loop src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA="></audio> <!-- Silent audio -->
+
+    <!-- Phone Container -->
+    <div class="phone-container rounded-[48px] p-2 w-full max-w-[400px] mx-auto">
+        <!-- Phone Screen -->
+        <div id="screen" class="screen rounded-[36px] overflow-hidden relative min-h-[700px] flex flex-col">
+            
+            <!-- Status Bar -->
+            <div id="statusBar" class="flex justify-between items-center px-6 py-3 text-white text-xs absolute top-0 left-0 right-0">
+                <div class="flex items-center space-x-1">
+                    <span class="text-sm font-semibold" id="timeDisplay">9:41</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="signal-bars">
+                        <div class="signal-bar h-1 opacity-50"></div>
+                        <div class="signal-bar h-2 opacity-75"></div>
+                        <div class="signal-bar h-3"></div>
+                        <div class="signal-bar h-4"></div>
+                    </div>
+                    <span class="font-medium">5G</span>
+                    <svg class="wifi-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>
+                    </svg>
+                    <div class="flex items-center space-x-1">
+                        <span class="font-medium">100%</span>
+                        <svg class="w-5 h-5" viewBox="0 0 24 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 1H2C1.44772 1 1 1.44772 1 2V9C1 9.55228 1.44772 10 2 10H19C19.5523 10 20 9.55228 20 9V2C20 1.44772 19.5523 1 19 1Z" stroke="white" stroke-width="1.5"/>
+                            <rect x="2.5" y="2.5" width="16" height="6" rx="1" fill="white"/>
+                            <path d="M22 3.5V7.5C22.5523 7.5 23 7.05228 23 6.5V4.5C23 3.94772 22.5523 3.5 22 3.5Z" fill="white"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Black Screen (Phone Off) -->
+            <div id="blackScreen" class="absolute inset-0 bg-black flex items-center justify-center text-gray-500">
+                <!-- Content here is minimal as it's 'off' -->
+                 <p class="text-sm opacity-50">Phone is idle</p>
+            </div>
+            
+            <!-- Lock Screen -->
+            <div id="lockScreen" class="lock-screen absolute inset-0 hidden pt-20"> <!-- Added padding top for status bar -->
+                <div class="flex flex-col h-full items-center">
+                    <div class="text-center text-white mt-12">
+                        <div class="text-7xl font-thin mb-1" id="lockTime">9:41</div>
+                        <div class="text-xl font-light" id="lockDate">Monday, June 14</div>
+                    </div>
+                    
+                    <div id="lockNotifications" class="flex-1 w-full px-4 mt-16">
+                        <!-- Message Notification will appear above this area, then other notifications could go here -->
+                    </div>
+                    
+                    <div class="mb-10 text-center">
+                        <div class="text-white text-sm font-medium">Swipe up to unlock</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main App Content (Input Form) -->
+            <div id="mainContent" class="p-6 text-white min-h-full flex-1 flex flex-col justify-center pt-16"> <!-- Added padding top for status bar -->
+                <div class="text-center mb-6">
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                        Client Simulator
+                    </h1>
+                    <p class="text-gray-400 text-sm mt-1">Configure and start an interaction</p>
+                </div>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium mb-1 text-gray-300">Client Name</label>
+                        <input id="clientName" type="text" value="Sarah Connor"
+                               class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-medium mb-1 text-gray-300">Interaction Type</label>
+                        <select id="interactionType" 
+                                class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-sm">
+                            <option value="call">📞 Phone Call</option>
+                            <option value="message">💬 Text Message</option>
+                            <option value="email">✉️ Email</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-medium mb-1 text-gray-300">Client's First Message</label>
+                        <textarea id="clientMessage" rows="2" 
+                                  class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all resize-none text-sm">I need help with my account, it seems to be locked.</textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-medium mb-1 text-gray-300">Your Reply</label>
+                        <textarea id="userReply" rows="2" 
+                                  class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all resize-none text-sm">Hi Sarah, I can help with that. Can you please provide your account email?</textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-medium mb-1 text-gray-300">Client's Follow-up</label>
+                        <textarea id="clientFollowup" rows="2" 
+                                  class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all resize-none text-sm">Sure, it's sarah.connor@example.com. Thanks!</textarea>
+                    </div>
+                    
+                    <button id="simulateBtn" 
+                            class="w-full mt-4 p-3.5 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold hover:from-green-600 hover:to-emerald-600 transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg text-base">
+                        Start Simulation
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Message Notification Banner -->
+            <div id="messageNotification" class="notification-banner absolute top-4 left-0 right-0 mx-3 text-white z-[120]">
+                <div class="flex items-center p-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center mr-3 shrink-0">
+                        <span class="text-lg font-bold" id="msgInitial">C</span>
+                    </div>
+                    <div class="flex-1 overflow-hidden">
+                        <div class="flex items-center justify-between">
+                            <p class="font-semibold text-sm" id="msgSender">Client Name</p>
+                            <span class="text-xs opacity-75 shrink-0 ml-2">now</span>
+                        </div>
+                        <p class="text-sm opacity-90 truncate" id="msgPreview">New message preview...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Call Overlay -->
+            <div id="callOverlay" class="call-overlay absolute inset-0 hidden flex-col items-center justify-center text-white p-6 z-[100]">
+                <div class="text-center">
+                    <div id="callerAvatar" class="w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 mx-auto mb-4 flex items-center justify-center pulse">
+                        <span class="text-4xl font-bold" id="callerInitial">C</span>
+                    </div>
+                    <h2 id="callerName" class="text-3xl font-semibold mb-1">Client Name</h2>
+                    <p id="callStatus" class="text-lg text-green-300 mb-10">Incoming call...</p>
+                    
+                    <div id="callActions" class="flex space-x-12 justify-center">
+                        <button id="declineCall" class="flex flex-col items-center text-white">
+                            <div class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center mb-1">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M3.654 3.654a.999.999 0 000 1.414L10.586 12l-6.932 6.932a.999.999 0 101.414 1.414L12 13.414l6.932 6.932a.999.999 0 101.414-1.414L13.414 12l6.932-6.932a.999.999 0 10-1.414-1.414L12 10.586 5.068 3.654a.999.999 0 00-1.414 0zM12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.69.28-.26 0-.51-.1-.69-.28l-2.04-2.04c-.18-.18-.28-.43-.28-.69 0-.26.1.51.28-.69C5.31 8.79 8.55 7 12 7s6.69 1.79 8.24 4.63c.18.18.28.43.28.69 0 .26-.1.51-.28.69l-2.04 2.04c-.18.18-.43.28-.69.28-.26 0-.51-.1-.69-.28-.79-.73-1.68-1.36-2.66-1.85-.33-.16-.56-.51-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+                            </div>
+                            <span class="text-xs">Decline</span>
+                        </button>
+                        <button id="acceptCall" class="flex flex-col items-center text-white">
+                            <div class="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center mb-1">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+                            </div>
+                           <span class="text-xs">Accept</span>
+                        </button>
+                    </div>
+                    
+                    <div id="callContent" class="hidden mt-8 max-w-sm w-full text-left">
+                        <div class="bg-black bg-opacity-30 rounded-xl p-4 mb-3">
+                            <div class="text-sm text-green-300 mb-1">Client says:</div>
+                            <p id="clientSpeaking" class="text-base leading-relaxed"></p>
+                        </div>
+                        
+                        <div id="userResponseSection" class="hidden">
+                            <div class="bg-white bg-opacity-10 rounded-xl p-4 mb-3">
+                                <div class="text-sm text-blue-300 mb-1">You reply:</div>
+                                <p id="userSpeaking" class="text-base leading-relaxed"></p>
+                            </div>
+                        </div>
+                        
+                        <div id="clientFollowupSection" class="hidden">
+                            <div class="bg-black bg-opacity-30 rounded-xl p-4">
+                                <div class="text-sm text-green-300 mb-1">Client responds:</div>
+                                <p id="clientFollowupSpeaking" class="text-base leading-relaxed"></p>
+                            </div>
+                        </div>
+                         <button id="endCallBtn" class="mt-6 w-16 h-16 mx-auto rounded-full bg-red-500 flex items-center justify-center">
+                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M3.654 3.654a.999.999 0 000 1.414L10.586 12l-6.932 6.932a.999.999 0 101.414 1.414L12 13.414l6.932 6.932a.999.999 0 101.414-1.414L13.414 12l6.932-6.932a.999.999 0 10-1.414-1.414L12 10.586 5.068 3.654a.999.999 0 00-1.414 0zM12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.69.28-.26 0-.51-.1-.69-.28l-2.04-2.04c-.18-.18-.28-.43-.28-.69 0-.26.1.51.28-.69C5.31 8.79 8.55 7 12 7s6.69 1.79 8.24 4.63c.18.18.28.43.28.69 0 .26-.1.51-.28.69l-2.04 2.04c-.18.18-.43.28-.69.28-.26 0-.51-.1-.69-.28-.79-.73-1.68-1.36-2.66-1.85-.33-.16-.56-.51-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chat Panel -->
+            <div id="chatPanel" class="absolute inset-0 bg-[#1C1C1E] hidden flex flex-col z-[100]"> <!-- iOS dark mode background -->
+                <!-- Chat Header -->
+                <div class="p-3 border-b border-gray-700 bg-[#2C2C2E] sticky top-0 z-10"> <!-- iOS darker header -->
+                    <div class="flex items-center space-x-2">
+                        <button id="backBtn" class="text-blue-400 p-1">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                            <span class="ml-1 text-sm">Back</span>
+                        </button>
+                        <div class="flex-1 flex items-center justify-center space-x-2 mr-12">
+                             <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
+                                <span class="text-sm font-bold text-white" id="chatInitial">C</span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-white text-sm" id="chatSender">Client Name</p>
+                                <p class="text-xs text-green-400">online</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chat Messages -->
+                <div id="chatMessagesContainer" class="flex-1 p-4 overflow-y-auto">
+                    <div id="chatMessages" class="space-y-3">
+                        <!-- Messages will be added here -->
+                    </div>
+                </div>
+                
+                <!-- Message Input (decorative for this simulation) -->
+                <div class="p-3 bg-[#2C2C2E] border-t border-gray-700 sticky bottom-0">
+                    <div class="flex items-center space-x-2">
+                        <input type="text" placeholder="Message..." disabled
+                               class="flex-1 p-2.5 rounded-full bg-gray-700 text-white placeholder-gray-400 focus:outline-none text-sm">
+                        <button class="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-white transform rotate-45" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Email Overlay -->
+            <div id="emailOverlay" class="absolute inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center p-4 z-[100]">
+                <div class="particles"></div> <!-- For particle effects -->
+                <div id="emailContainer" class="w-full max-w-md">
+                    <div id="emailEnvelope" class="text-center transform scale-0 opacity-0">
+                        <!-- Simplified envelope, main focus on content reveal -->
+                         <svg class="w-24 h-24 text-yellow-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                    </div>
+                    
+                    <div id="emailContent" class="bg-white rounded-xl p-6 shadow-2xl text-gray-800 opacity-0 transform scale-90">
+                        <div class="border-b pb-3 mb-3">
+                            <h3 class="font-bold text-lg" id="emailSender">From: Client Name</h3>
+                            <p class="text-sm text-gray-500">Subject: Important Message</p>
+                        </div>
+                        <div id="emailBody" class="text-sm leading-relaxed mb-4 min-h-[50px]"></div>
+                        
+                        <div id="emailReplySection" class="border-t pt-3 mt-3 hidden">
+                            <div class="text-xs text-gray-500 mb-1 font-semibold">Your Reply:</div>
+                            <div id="emailUserReply" class="text-sm leading-relaxed"></div>
+                        </div>
+                        <div id="emailFollowupSection" class="border-t pt-3 mt-3 hidden">
+                            <div class="text-xs text-gray-500 mb-1 font-semibold">Client's Response:</div>
+                            <div id="emailClientFollowup" class="text-sm leading-relaxed"></div>
+                        </div>
+                        <button id="closeEmailBtn" class="mt-6 w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">Close Email</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Home Indicator (always at bottom of screen div) -->
+            <div class="home-indicator mt-auto"></div>
+        </div>
+    </div>
+
+    <script>
+        class ClientSimulator {
+            constructor() {
+                this.currentSimulation = null;
+                this.typewriterSpeed = 30; // ms per character
+
+                this.els = {
+                    screen: document.getElementById('screen'),
+                    statusBar: document.getElementById('statusBar'),
+                    timeDisplay: document.getElementById('timeDisplay'),
+                    blackScreen: document.getElementById('blackScreen'),
+                    lockScreen: document.getElementById('lockScreen'),
+                    lockTime: document.getElementById('lockTime'),
+                    lockDate: document.getElementById('lockDate'),
+                    mainContent: document.getElementById('mainContent'),
+                    
+                    clientNameInput: document.getElementById('clientName'),
+                    interactionTypeInput: document.getElementById('interactionType'),
+                    clientMessageInput: document.getElementById('clientMessage'),
+                    userReplyInput: document.getElementById('userReply'),
+                    clientFollowupInput: document.getElementById('clientFollowup'),
+                    simulateBtn: document.getElementById('simulateBtn'),
+
+                    messageNotification: document.getElementById('messageNotification'),
+                    msgInitial: document.getElementById('msgInitial'),
+                    msgSender: document.getElementById('msgSender'),
+                    msgPreview: document.getElementById('msgPreview'),
+                    
+                    chatPanel: document.getElementById('chatPanel'),
+                    chatInitial: document.getElementById('chatInitial'),
+                    chatSender: document.getElementById('chatSender'),
+                    chatMessagesContainer: document.getElementById('chatMessagesContainer'),
+                    chatMessages: document.getElementById('chatMessages'),
+                    backBtn: document.getElementById('backBtn'),
+
+                    callOverlay: document.getElementById('callOverlay'),
+                    callerAvatar: document.getElementById('callerAvatar'),
+                    callerInitial: document.getElementById('callerInitial'),
+                    callerName: document.getElementById('callerName'),
+                    callStatus: document.getElementById('callStatus'),
+                    callActions: document.getElementById('callActions'),
+                    acceptCallBtn: document.getElementById('acceptCall'),
+                    declineCallBtn: document.getElementById('declineCall'),
+                    endCallBtn: document.getElementById('endCallBtn'),
+                    callContent: document.getElementById('callContent'),
+                    clientSpeaking: document.getElementById('clientSpeaking'),
+                    userResponseSection: document.getElementById('userResponseSection'),
+                    userSpeaking: document.getElementById('userSpeaking'),
+                    clientFollowupSection: document.getElementById('clientFollowupSection'),
+                    clientFollowupSpeaking: document.getElementById('clientFollowupSpeaking'),
+                    callAudio: document.getElementById('callToneAudio'),
+
+                    emailOverlay: document.getElementById('emailOverlay'),
+                    emailEnvelope: document.getElementById('emailEnvelope'),
+                    emailContent: document.getElementById('emailContent'),
+                    emailSender: document.getElementById('emailSender'),
+                    emailBody: document.getElementById('emailBody'),
+                    emailReplySection: document.getElementById('emailReplySection'),
+                    emailUserReply: document.getElementById('emailUserReply'),
+                    emailFollowupSection: document.getElementById('emailFollowupSection'),
+                    emailClientFollowup: document.getElementById('emailClientFollowup'),
+                    closeEmailBtn: document.getElementById('closeEmailBtn'),
+                    particlesContainer: document.querySelector('#emailOverlay .particles')
+                };
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.updateTime();
+                setInterval(() => this.updateTime(), 1000 * 30); // Update time less frequently
+                this.phoneToSleep(true); // Start with phone sleeping, no animation
+            }
+
+            bindEvents() {
+                this.els.simulateBtn.addEventListener('click', () => this.startSimulation());
+                
+                this.els.acceptCallBtn.addEventListener('click', () => this.acceptCall());
+                this.els.declineCallBtn.addEventListener('click', () => this.declineCall());
+                this.els.endCallBtn.addEventListener('click', () => this.declineCall()); // End call also uses decline logic
+
+                this.els.messageNotification.addEventListener('click', () => this.handleNotificationTap());
+                this.els.backBtn.addEventListener('click', () => this.closeChat());
+                
+                this.els.blackScreen.addEventListener('click', () => this.wakePhone());
+                // Allow tapping anywhere on lock screen to unlock (for simplicity)
+                this.els.lockScreen.addEventListener('click', () => {
+                    if (!this.els.messageNotification.style.transform || this.els.messageNotification.style.transform === 'translateY(-150%)') {
+                        this.unlockPhone();
+                    }
+                    // If notification is visible, tap is handled by notification's listener
+                });
+                this.els.closeEmailBtn.addEventListener('click', () => this.closeEmail());
+                this.els.emailOverlay.addEventListener('click', (e) => {
+                     if (e.target === this.els.emailOverlay) this.closeEmail();
+                });
+            }
+
+            updateTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }).replace(" AM", "").replace(" PM", "");
+                const dateString = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+                
+                this.els.timeDisplay.textContent = timeString;
+                this.els.lockTime.textContent = timeString;
+                this.els.lockDate.textContent = dateString;
+            }
+
+            hideAllOverlays() {
+                gsap.to([this.els.callOverlay, this.els.chatPanel, this.els.emailOverlay], {
+                    opacity: 0,
+                    duration: 0.2,
+                    onComplete: () => {
+                        this.els.callOverlay.classList.add('hidden');
+                        this.els.chatPanel.classList.add('hidden');
+                        this.els.emailOverlay.classList.add('hidden');
+                    }
+                });
+                this.els.mainContent.classList.remove('hidden'); // Ensure form is visible by default
+                gsap.to(this.els.mainContent, { opacity: 1, duration: 0.3 });
+            }
+            
+            async typewriterEffect(text, element, callback) {
+                element.innerHTML = '';
+                element.classList.add('typewriter');
+                for (let i = 0; i < text.length; i++) {
+                    element.innerHTML += text.charAt(i);
+                    await new Promise(resolve => setTimeout(resolve, this.typewriterSpeed));
+                }
+                element.classList.remove('typewriter');
+                if (callback) callback();
+            }
+
+            // --- Phone State ---
+            wakePhone() { // From black screen to lock screen
+                if (!this.els.blackScreen.classList.contains('hidden')) {
+                    gsap.to(this.els.blackScreen, {
+                        opacity: 0,
+                        duration: 0.3,
+                        onComplete: () => {
+                            this.els.blackScreen.classList.add('hidden');
+                            this.els.lockScreen.classList.remove('hidden');
+                            gsap.fromTo(this.els.lockScreen, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+                        }
+                    });
+                }
+            }
+
+            unlockPhone() { // From lock screen to main content/app
+                if (!this.els.lockScreen.classList.contains('hidden')) {
+                    this.els.screen.classList.add('on');
+                    gsap.to(this.els.lockScreen, {
+                        opacity: 0,
+                        duration: 0.3,
+                        onComplete: () => {
+                            this.els.lockScreen.classList.add('hidden');
+                            this.els.mainContent.classList.remove('hidden');
+                            gsap.fromTo(this.els.mainContent, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+                        }
+                    });
+                }
+            }
+
+            phoneToSleep(instant = false) { // To black screen
+                this.els.screen.classList.remove('on', 'screen-glow-effect');
+                this.els.lockScreen.classList.add('hidden');
+                this.els.mainContent.classList.add('hidden'); // Hide form
+                gsap.set(this.els.mainContent, {opacity: 0});
+
+                this.els.blackScreen.classList.remove('hidden');
+                if (instant) {
+                    gsap.set(this.els.blackScreen, { opacity: 1 });
+                } else {
+                    gsap.fromTo(this.els.blackScreen, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+                }
+                // Ensure overlays are also hidden
+                this.els.callOverlay.classList.add('hidden');
+                this.els.chatPanel.classList.add('hidden');
+                this.els.emailOverlay.classList.add('hidden');
+                gsap.set([this.els.callOverlay, this.els.chatPanel, this.els.emailOverlay], {opacity: 0});
+            }
+
+
+            startSimulation() {
+                const clientName = this.els.clientNameInput.value.trim() || 'Client';
+                const clientMessage = this.els.clientMessageInput.value.trim() || 'Hello there!';
+                const userReply = this.els.userReplyInput.value.trim() || 'Hi! How can I help?';
+                const clientFollowup = this.els.clientFollowupInput.value.trim() || 'Thanks for the reply.';
+
+                this.currentSimulation = {
+                    clientName,
+                    interactionType: this.els.interactionTypeInput.value,
+                    clientMessage,
+                    userReply,
+                    clientFollowup,
+                    clientInitial: clientName.charAt(0).toUpperCase()
+                };
+
+                // Hide main form content, prepare for simulation display
+                gsap.to(this.els.mainContent, {
+                    opacity: 0,
+                    duration: 0.3,
+                    onComplete: () => this.els.mainContent.classList.add('hidden')
+                });
+
+                if (this.currentSimulation.interactionType === 'message') {
+                    this.phoneToSleep(); // Go to black screen first
+                    setTimeout(() => this.simulateMessage(), 500); // Short delay before message sequence
+                } else {
+                    // For Call and Email, assume phone is 'awake' at the main screen, then overlay appears
+                    this.els.screen.classList.add('on'); // Ensure screen is in a base 'on' state
+                    this.els.blackScreen.classList.add('hidden');
+                    this.els.lockScreen.classList.add('hidden');
+                    // mainContent is already fading out. The specific simulation will show its overlay.
+
+                    switch (this.currentSimulation.interactionType) {
+                        case 'call':
+                            this.simulateCall();
+                            break;
+                        case 'email':
+                            this.simulateEmail();
+                            break;
+                    }
+                }
+            }
+
+            // --- Call Simulation ---
+            simulateCall() {
+                const { clientName, clientInitial } = this.currentSimulation;
+                this.els.callerName.textContent = clientName;
+                this.els.callerInitial.textContent = clientInitial;
+                this.els.callStatus.textContent = 'Incoming call...';
+
+                this.els.callActions.classList.remove('hidden');
+                this.els.callContent.classList.add('hidden');
+                this.els.endCallBtn.classList.add('hidden'); // Hide end call button initially
+
+
+                this.els.callOverlay.classList.remove('hidden');
+                gsap.fromTo(this.els.callOverlay, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+
+                this.els.screen.classList.add('blink', 'vibrate');
+                this.els.callAudio.play().catch(e => console.log("Audio play prevented:", e));
+            }
+
+            async acceptCall() {
+                this.els.screen.classList.remove('blink', 'vibrate');
+                this.els.callAudio.pause();
+                this.els.callAudio.currentTime = 0;
+
+                this.els.callStatus.textContent = 'Call connected';
+                gsap.to(this.els.callActions, {
+                    opacity: 0,
+                    duration: 0.3,
+                    onComplete: () => this.els.callActions.classList.add('hidden')
+                });
+                
+                this.els.callContent.classList.remove('hidden');
+                this.els.endCallBtn.classList.remove('hidden');
+                gsap.fromTo(this.els.callContent, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, delay:0.2 });
+
+                // Clear previous messages
+                this.els.clientSpeaking.innerHTML = '';
+                this.els.userSpeaking.innerHTML = '';
+                this.els.clientFollowupSpeaking.innerHTML = '';
+                this.els.userResponseSection.classList.add('hidden');
+                this.els.clientFollowupSection.classList.add('hidden');
+
+
+                await new Promise(resolve => setTimeout(resolve, 300)); // 0.30 seconds delay
+                await this.typewriterEffect(this.currentSimulation.clientMessage, this.els.clientSpeaking);
+                
+                this.els.userResponseSection.classList.remove('hidden');
+                gsap.fromTo(this.els.userResponseSection, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+                await this.typewriterEffect(this.currentSimulation.userReply, this.els.userSpeaking);
+
+                this.els.clientFollowupSection.classList.remove('hidden');
+                gsap.fromTo(this.els.clientFollowupSection, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+                await this.typewriterEffect(this.currentSimulation.clientFollowup, this.els.clientFollowupSpeaking);
+            }
+
+            declineCall() {
+                this.els.screen.classList.remove('blink', 'vibrate');
+                this.els.callAudio.pause();
+                this.els.callAudio.currentTime = 0;
+
+                gsap.to(this.els.callOverlay, {
+                    opacity: 0,
+                    duration: 0.3,
+                    onComplete: () => {
+                        this.els.callOverlay.classList.add('hidden');
+                        this.unlockPhone(); // Go back to main app screen
+                    }
+                });
+            }
+
+            // --- Message Simulation ---
+            simulateMessage() {
+                const { clientName, clientMessage, clientInitial } = this.currentSimulation;
+                
+                this.wakePhone(); // Show lock screen
+
+                setTimeout(() => { // Delay for notification to appear after wake
+                    this.els.msgInitial.textContent = clientInitial;
+                    this.els.msgSender.textContent = clientName;
+                    this.els.msgPreview.textContent = clientMessage.substring(0, 30) + (clientMessage.length > 30 ? '...' : '');
+                    
+                    this.els.screen.classList.add('screen-glow-effect'); // Glow effect
+                    gsap.to(this.els.messageNotification, { 
+                        y: 0, 
+                        opacity: 1, 
+                        duration: 0.5, 
+                        ease: "back.out(1.7)" 
+                    });
+                }, 800);
+            }
+
+            async handleNotificationTap() {
+                this.els.screen.classList.remove('screen-glow-effect');
+                gsap.to(this.els.messageNotification, {
+                    y: "-150%",
+                    opacity: 0,
+                    duration: 0.3,
+                    ease: "power2.in"
+                });
+
+                this.unlockPhone(); // Unlocks to mainContent, then we switch
+                
+                // Switch from mainContent to chatPanel
+                gsap.to(this.els.mainContent, {
+                    opacity: 0,
+                    duration: 0.2,
+                    onComplete: () => this.els.mainContent.classList.add('hidden')
+                });
+
+                this.els.chatInitial.textContent = this.currentSimulation.clientInitial;
+                this.els.chatSender.textContent = this.currentSimulation.clientName;
+                this.els.chatMessages.innerHTML = ''; // Clear previous messages
+
+                this.els.chatPanel.classList.remove('hidden');
+                gsap.fromTo(this.els.chatPanel, { opacity: 0, x: "100%" }, { opacity: 1, x: "0%", duration: 0.4, ease: "power2.out" });
+
+                // Conversation flow
+                await this.addMessageToChat(this.currentSimulation.clientMessage, 'received');
+                await new Promise(resolve => setTimeout(resolve, 500)); // Pause before user "sends"
+                await this.addMessageToChat(this.currentSimulation.userReply, 'sent');
+                await new Promise(resolve => setTimeout(resolve, 800)); // Pause before client "sends" followup
+                await this.addMessageToChat(this.currentSimulation.clientFollowup, 'received');
+            }
+            
+            async addMessageToChat(text, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `flex ${type === 'sent' ? 'justify-end' : 'justify-start'}`;
+                
+                const bubble = document.createElement('div');
+                bubble.className = `chat-bubble-${type} p-3 rounded-2xl max-w-[70%] shadow`;
+                bubble.innerHTML = `<p class="text-sm leading-snug"></p>`; // Inner p for typewriter
+                
+                messageDiv.appendChild(bubble);
+                this.els.chatMessages.appendChild(messageDiv);
+
+                gsap.fromTo(bubble, 
+                    { opacity: 0, y: 20, scale:0.8 }, 
+                    { opacity: 1, y: 0, scale:1, duration: 0.3, ease: "back.out(1.2)" }
+                );
+                
+                // Typewriter effect for the message content
+                const textElement = bubble.querySelector('p');
+                await this.typewriterEffect(text, textElement);
+
+                this.els.chatMessagesContainer.scrollTop = this.els.chatMessagesContainer.scrollHeight;
+            }
+
+            closeChat() {
+                gsap.to(this.els.chatPanel, {
+                    opacity: 0,
+                    x: "100%",
+                    duration: 0.4,
+                    ease: "power2.in",
+                    onComplete: () => {
+                        this.els.chatPanel.classList.add('hidden');
+                        this.els.mainContent.classList.remove('hidden'); // Show form again
+                        gsap.to(this.els.mainContent, { opacity: 1, duration: 0.3 });
+                    }
+                });
+            }
+
+            // --- Email Simulation ---
+            simulateEmail() {
+                const { clientName, clientMessage, userReply, clientFollowup } = this.currentSimulation;
+
+                this.els.emailSender.textContent = `From: ${clientName}`;
+                this.els.emailBody.innerHTML = ''; // Clear previous
+                this.els.emailUserReply.innerHTML = '';
+                this.els.emailClientFollowup.innerHTML = '';
+                this.els.emailReplySection.classList.add('hidden');
+                this.els.emailFollowupSection.classList.add('hidden');
+
+                // Dim background (mainContent already faded out by startSimulation)
+                this.els.screen.classList.add('on'); // Ensure base screen state
+
+                this.els.emailOverlay.classList.remove('hidden');
+                gsap.to(this.els.emailOverlay, { opacity: 1, duration: 0.3 });
+
+                // Animate envelope
+                gsap.to(this.els.emailEnvelope, {
+                    scale: 1,
+                    opacity: 1,
+                    rotate: 0,
+                    duration: 0.6,
+                    ease: "back.out(1.7)",
+                    delay: 0.2
+                });
+
+                // Animate email content appearing after envelope
+                setTimeout(async () => {
+                    gsap.to(this.els.emailEnvelope, { opacity: 0, scale: 0.8, duration: 0.3 });
+                    gsap.to(this.els.emailContent, {
+                        opacity: 1,
+                        scale: 1,
+                        duration: 0.5,
+                        ease: "expo.out",
+                        delay: 0.1,
+                        onStart: () => this.createEmailParticles(15)
+                    });
+
+                    await this.typewriterEffect(clientMessage, this.els.emailBody);
+                    
+                    this.els.emailReplySection.classList.remove('hidden');
+                    gsap.fromTo(this.els.emailReplySection, {opacity:0, y:10}, {opacity:1, y:0, duration:0.4, delay:0.2});
+                    await this.typewriterEffect(userReply, this.els.emailUserReply);
+
+                    this.els.emailFollowupSection.classList.remove('hidden');
+                    gsap.fromTo(this.els.emailFollowupSection, {opacity:0, y:10}, {opacity:1, y:0, duration:0.4, delay:0.2});
+                    await this.typewriterEffect(clientFollowup, this.els.emailClientFollowup);
+
+                }, 1000); // Delay for envelope animation
+            }
+            
+            createEmailParticles(count = 20) {
+                this.els.particlesContainer.innerHTML = ''; // Clear old particles
+                for (let i = 0; i < count; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    const size = Math.random() * 5 + 2; // 2px to 7px
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.background = `hsl(${Math.random() * 60 + 180}, 100%, 70%)`; // Blue/Cyan sparkles
+                    
+                    this.els.particlesContainer.appendChild(particle);
+
+                    gsap.fromTo(particle, 
+                        { 
+                            x: Math.random() * this.els.particlesContainer.offsetWidth,
+                            y: Math.random() * this.els.particlesContainer.offsetHeight,
+                            opacity: 0,
+                            scale: Math.random() * 0.5 + 0.5
+                        },
+                        {
+                            opacity: Math.random() * 0.5 + 0.5,
+                            scale: 0,
+                            duration: Math.random() * 1 + 0.5, // 0.5 to 1.5 seconds
+                            delay: Math.random() * 0.5,
+                            ease: "power1.out",
+                            onComplete: () => particle.remove()
+                        }
+                    );
+                }
+            }
+
+            closeEmail() {
+                gsap.to(this.els.emailOverlay, {
+                    opacity: 0,
+                    duration: 0.3,
+                    onComplete: () => {
+                        this.els.emailOverlay.classList.add('hidden');
+                        this.els.emailContent.style.opacity = 0; // Reset for next time
+                        this.els.emailContent.style.transform = 'scale(0.9)';
+                        this.els.emailEnvelope.style.opacity = 0;
+                        this.els.emailEnvelope.style.transform = 'scale(0) rotate(180deg)';
+                        this.unlockPhone(); // Go back to main app screen
+                    }
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            window.clientSimulator = new ClientSimulator();
+        });
+    </script>
+
+</body>
+</html>
