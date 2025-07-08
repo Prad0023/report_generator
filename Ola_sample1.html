@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maya Brands - Premium Wholesale Fashion</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'serif': ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'brand-dark': '#111827', // A slightly softer black
+                        'brand-gold': '#d4af37', // A classic, elegant gold
+                        'brand-bg': '#f9f9f9',   // A clean, off-white
+                        'brand-gray': '#e5e7eb',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .hero-gradient {
+            background: linear-gradient(to top, rgba(17, 24, 39, 0.8) 0%, rgba(17, 24, 39, 0.4) 50%, rgba(17, 24, 39, 0) 100%);
+        }
+    </style>
+</head>
+<body class="bg-brand-bg font-sans text-gray-700">
+
+    <!-- =========== Header & Navigation =========== -->
+    <header id="header" class="fixed top-0 left-0 w-full z-50 transition-all duration-300">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-3xl font-serif font-bold text-white transition-colors duration-300" id="logo-text">Maya Brands</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#showcase" class="text-white hover:text-brand-gold transition-colors">Showcase</a>
+                <a href="#collection" class="text-white hover:text-brand-gold transition-colors">Collection</a>
+                <a href="#process" class="text-white hover:text-brand-gold transition-colors">Process</a>
+            </div>
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="#" class="text-white hover:text-brand-gold transition-colors px-3 py-2">Login</a>
+                <a href="#" class="bg-brand-gold text-brand-dark font-semibold px-5 py-2 rounded-full hover:bg-opacity-90 transition-all">Register</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-white z-50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden fixed inset-0 bg-brand-dark/95 backdrop-blur-sm pt-24 z-40">
+            <div class="flex flex-col items-center space-y-8">
+                <a href="#showcase" class="text-white text-xl hover:text-brand-gold">Showcase</a>
+                <a href="#collection" class="text-white text-xl hover:text-brand-gold">Collection</a>
+                <a href="#process" class="text-white text-xl hover:text-brand-gold">Process</a>
+                <div class="flex flex-col items-center space-y-6 pt-10">
+                    <a href="#" class="text-white text-xl">Login</a>
+                    <a href="#" class="bg-brand-gold text-brand-dark font-semibold px-6 py-3 rounded-full">Register</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- =========== Hero Section =========== -->
+        <section class="relative h-screen flex items-end bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?q=80&w=2070&auto=format&fit=crop');">
+            <div class="absolute inset-0 hero-gradient"></div>
+            <div class="relative z-10 container mx-auto px-6 pb-20 md:pb-28 text-left">
+                <p class="text-brand-gold font-semibold mb-2">For Retailers & Shopkeepers</p>
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-serif font-extrabold text-white max-w-3xl leading-tight">The Wholesale Partner For Modern Retail.</h1>
+                <p class="text-lg md:text-xl text-gray-200 max-w-2xl mt-6 mb-10">Access curated collections from leading fashion brands. We provide the quality and rates you need to thrive.</p>
+                <a href="#collection" class="bg-white text-brand-dark font-bold px-8 py-4 rounded-full text-lg hover:bg-brand-gray transition-transform duration-300 transform hover:scale-105 inline-block">View Current Collection</a>
+            </div>
+        </section>
+
+        <!-- =========== Bento Grid Showcase =========== -->
+        <section id="showcase" class="py-20 md:py-28">
+            <div class="container mx-auto px-6">
+                <div class="text-left mb-16 max-w-2xl">
+                    <h2 class="text-4xl md:text-5xl font-serif font-bold text-brand-dark">Our Showcase</h2>
+                    <p class="text-gray-600 mt-4 text-lg">An overview of our categories and the value we bring to our partners. See what's new and why retailers choose us.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[600px]">
+                    <div class="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-xl shadow-md">
+                        <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1887&auto=format&fit=crop" alt="New Arrivals" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent p-6 flex flex-col justify-end"><h3 class="text-3xl font-bold text-white">New Arrivals</h3><p class="text-gray-200 mt-1">Fresh drops from top brands, updated daily.</p></div>
+                        <a href="#collection" class="absolute inset-0"></a>
+                    </div>
+                    <div class="md:col-span-2 bg-white p-8 rounded-xl shadow-md flex flex-col justify-center ring-1 ring-gray-100">
+                        <h3 class="text-2xl font-bold text-brand-dark mb-4">The Partner You Need</h3>
+                        <div class="space-y-3 text-gray-600">
+                            <p class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-brand-gold" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Unbeatable Wholesale Rates</p>
+                            <p class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-brand-gold" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Quality-Checked Apparel</p>
+                            <p class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-brand-gold" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Dedicated Retailer Support</p>
+                        </div>
+                    </div>
+                    <div class="group relative overflow-hidden rounded-xl shadow-md">
+                        <img src="https://images.unsplash.com/photo-1611312449412-6cefac5dc2b9?q=80&w=1887&auto=format&fit=crop" alt="Men's Wear" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent p-6 flex flex-col justify-end"><h3 class="text-2xl font-bold text-white">Men's</h3></div>
+                        <a href="#collection" class="absolute inset-0"></a>
+                    </div>
+                    <div class="group relative overflow-hidden rounded-xl shadow-md">
+                        <img src="https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?q=80&w=2070&auto=format&fit=crop" alt="Women's Wear" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent p-6 flex flex-col justify-end"><h3 class="text-2xl font-bold text-white">Women's</h3></div>
+                        <a href="#collection" class="absolute inset-0"></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========== NEW: The Current Collection Section =========== -->
+        <section id="collection" class="py-20 md:py-28 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-serif font-bold text-brand-dark">The Current Collection</h2>
+                    <p class="text-gray-600 mt-4 text-lg max-w-3xl mx-auto">A live look at the brands and styles moving right now. Identify top-performers and new trends for your store.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Product Card 1 -->
+                    <div class="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 ring-1 ring-gray-200/50">
+                        <div class="relative">
+                            <img class="w-full h-80 object-cover transform group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=1972&auto=format&fit=crop" alt="Athleisure Wear">
+                            <span class="absolute top-0 right-0 bg-brand-gold text-brand-dark text-xs font-bold uppercase px-3 py-1 rounded-bl-lg">Best Seller</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-xl font-bold text-brand-dark">Unisex Athleisure Set</h3>
+                                <img src="https://tailwindui.com/img/logos/158x48/statamic-logo-gray-400.svg" alt="Statamic" class="h-6 filter grayscale group-hover:grayscale-0 transition-all">
+                            </div>
+                            <p class="text-gray-500 text-sm mb-4">Comfort-fit hoodies and joggers in premium cotton fleece. Available in 5 colors.</p>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 2 -->
+                    <div class="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 ring-1 ring-gray-200/50">
+                        <div class="relative">
+                            <img class="w-full h-80 object-cover transform group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=1887&auto=format&fit=crop" alt="Women's Blazer">
+                            <span class="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold uppercase px-3 py-1 rounded-bl-lg">New Arrival</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-xl font-bold text-brand-dark">Women's Linen Blazer</h3>
+                                <img src="https://tailwindui.com/img/logos/158x48/reform-logo-gray-400.svg" alt="Reform" class="h-6 filter grayscale group-hover:grayscale-0 transition-all">
+                            </div>
+                            <p class="text-gray-500 text-sm mb-4">A sophisticated, lightweight blazer perfect for spring/summer collections.</p>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 3 -->
+                    <div class="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 ring-1 ring-gray-200/50">
+                        <div class="relative">
+                            <img class="w-full h-80 object-cover transform group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1560243563-062bfc001d68?q=80&w=1887&auto=format&fit=crop" alt="Men's Denim">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-xl font-bold text-brand-dark">Men's Premium Denim</h3>
+                                <img src="https://tailwindui.com/img/logos/158x48/tuple-logo-gray-400.svg" alt="Tuple" class="h-6 filter grayscale group-hover:grayscale-0 transition-all">
+                            </div>
+                            <p class="text-gray-500 text-sm mb-4">High-margin potential, crafted from 14oz raw selvedge denim in slim and straight fits.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========== How It Works Section =========== -->
+        <section id="process" class="py-20 md:py-28 bg-brand-bg">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-serif font-bold text-brand-dark">Our Streamlined Process</h2>
+                    <p class="text-gray-600 mt-4 text-lg max-w-2xl mx-auto">We make sourcing simple, efficient, and profitable. Get started in three steps.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    <div class="bg-white p-8 rounded-xl ring-1 ring-brand-gray/50 relative">
+                        <span class="absolute top-0 left-0 -mt-5 -ml-4 h-16 w-16 flex items-center justify-center bg-brand-gold rounded-full text-brand-dark font-serif text-3xl font-bold">1</span>
+                        <h3 class="text-xl font-bold text-brand-dark mt-4 mb-2">Register & Verify</h3>
+                        <p class="text-gray-600">Create your business account. We verify all our retailers to maintain an exclusive B2B network.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl ring-1 ring-brand-gray/50 relative">
+                        <span class="absolute top-0 left-0 -mt-5 -ml-4 h-16 w-16 flex items-center justify-center bg-brand-gold rounded-full text-brand-dark font-serif text-3xl font-bold">2</span>
+                        <h3 class="text-xl font-bold text-brand-dark mt-4 mb-2">Join & Browse</h3>
+                        <p class="text-gray-600">Gain access to our private WhatsApp group for daily catalogs, real-time stock, and direct communication.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl ring-1 ring-brand-gray/50 relative">
+                        <span class="absolute top-0 left-0 -mt-5 -ml-4 h-16 w-16 flex items-center justify-center bg-brand-gold rounded-full text-brand-dark font-serif text-3xl font-bold">3</span>
+                        <h3 class="text-xl font-bold text-brand-dark mt-4 mb-2">Order & Grow</h3>
+                        <p class="text-gray-600">Place your orders with our team. We handle the logistics so you can focus on growing your business.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- =========== WhatsApp CTA Section =========== -->
+        <section class="bg-brand-dark text-white">
+            <div class="container mx-auto px-6 py-20 md:py-24 text-center">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">The Insider's Access</h2>
+                <p class="text-gray-300 max-w-2xl mx-auto mb-8 text-lg">Join our private WhatsApp group for exclusive access to daily catalogs, flash sales, and new inventory alerts before anyone else.</p>
+                <a href="https://wa.me/yourphonenumber" target="_blank" class="inline-flex items-center bg-green-500 text-white font-bold px-8 py-4 rounded-full text-lg hover:bg-green-600 transition-transform duration-300 transform hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.001 2.235.652 4.395 1.849 6.215l-1.06 3.868 3.935-1.037z"/></svg>
+                    Request to Join
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- =========== Footer =========== -->
+    <footer class="bg-white">
+        <div class="container mx-auto px-6 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <h3 class="text-2xl font-serif font-bold text-brand-dark mb-4">Maya Brands</h3>
+                    <p class="text-gray-600 max-w-sm">The premier wholesale partner for retailers seeking quality, variety, and unbeatable value in fashion apparel.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-brand-dark mb-4">Navigate</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#showcase" class="text-gray-600 hover:text-brand-gold">Showcase</a></li>
+                        <li><a href="#collection" class="text-gray-600 hover:text-brand-gold">Collection</a></li>
+                        <li><a href="#process" class="text-gray-600 hover:text-brand-gold">Process</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-brand-dark mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li><a href="mailto:contact@mayabrands.com" class="hover:text-brand-gold">contact@mayabrands.com</a></li>
+                        <li><a href="tel:+1234567890" class="hover:text-brand-gold">+1 (234) 567-890</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-200 pt-8 text-center text-gray-500">
+                <p>© 2024 Maya Brands. All Rights Reserved. A B2B Wholesale Platform.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for interactivity -->
+    <script>
+        const header = document.getElementById('header');
+        const logoText = document.getElementById('logo-text');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+        mobileMenu.addEventListener('click', (e) => { if (e.target.tagName === 'A') { mobileMenu.classList.add('hidden'); } });
+
+        window.addEventListener('scroll', () => {
+            const navLinks = header.querySelectorAll('nav a:not(.bg-brand-gold)');
+            if (window.scrollY > 50) {
+                header.classList.add('bg-white/80', 'shadow-lg', 'backdrop-blur-sm');
+                logoText.classList.remove('text-white');
+                logoText.classList.add('text-brand-dark');
+                navLinks.forEach(link => {
+                    link.classList.remove('text-white');
+                    link.classList.add('text-brand-dark');
+                });
+            } else {
+                header.classList.remove('bg-white/80', 'shadow-lg', 'backdrop-blur-sm');
+                logoText.classList.add('text-white');
+                logoText.classList.remove('text-brand-dark');
+                navLinks.forEach(link => {
+                    link.classList.add('text-white');
+                    link.classList.remove('text-brand-dark');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
